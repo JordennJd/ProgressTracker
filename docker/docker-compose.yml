@@ -1,0 +1,10 @@
+# docker-compose.yml
+services:
+  godb:
+    image: postgres
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+      POSTGRES_DB: saxs
+    ports:
+      - "5432:5432"
