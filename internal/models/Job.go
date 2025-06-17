@@ -9,10 +9,11 @@ import (
 type JobStatus int
 
 const (
-	StatusPending   JobStatus = iota // 0
-	StatusRunning                    // 1
-	StatusCompleted                  // 2
-	StatusFailed                     // 3
+	StatusCreated JobStatus = iota
+	StatusPending
+	StatusRunning
+	StatusCompleted
+	StatusFailed
 )
 
 type Job struct {
@@ -25,6 +26,7 @@ type Job struct {
 	Context    *string    `json:"context"`
 	CreatedAt  time.Time  `json:"created_at"`
 	FinishedAt *time.Time `json:"finished_at"`
+	UserID     uuid.UUID  `json:"user_id"`
 }
 
 func (Job) TableName() string {

@@ -8,3 +8,30 @@ services:
       POSTGRES_DB: saxs
     ports:
       - "5432:5432"
+    healthcheck:
+      test: [ "CMD-SHELL", "pg_isready -U postgres -d saxs" ]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+
+  migrate:
+    build:
+      context: ../
+      dockerfile: cmd/migrate/Dockerfile
+    depends_on:
+      godb:
+        condition: service_healthy
+    environment:
+      DB_URL: "postgres://postgres:postgres@godb:5432/saxs?sslmode=disable"
+      MIGRATIONS_PATH: "migrations"
+
+  redis:
+    image: redis:7-alpine
+    container_name: redis
+    ports:
+      - "6379:6379"
+    healthcheck:
+      test: [ "CMD", "redis-cli", "ping" ]
+      interval: 5s
+      timeout: 3s
+      retries: 5

@@ -2,38 +2,49 @@ package main
 
 import (
 	"github.com/gorilla/mux"
+	"github.com/spf13/viper"
 	"log"
 	"net/http"
-	"os"
+	"progress-tracker/internal/config"
 	"progress-tracker/internal/handlers"
+	"progress-tracker/internal/middlewares"
 
 	"progress-tracker/internal/services"
 
-	"github.com/joho/godotenv"
 	"gorm.io/driver/postgres"
 	"gorm.io/gorm"
 )
 
 func main() {
-	err := godotenv.Load()
-	if err != nil {
-		log.Fatal("Ошибка загрузки .env файла")
-	}
+	config.Configurate()
 
-	dbURL := os.Getenv("DB_URL")
+	dbURL := viper.GetString("database.url")
+
 	db, err := gorm.Open(postgres.Open(dbURL), &gorm.Config{})
 	if err != nil {
+
 		log.Fatal(err)
 	}
+
 	jobService := services.NewJobService(db)
-	jobHandler := handlers.NewJobHandler(*jobService)
+	progressService := services.NewProgressService()
+	progressService.StartQueueWorker()
+
+	jobHandler := handlers.NewJobHandler(*jobService, *progressService)
 
 	// Создаём новый router
 	r := mux.NewRouter()
+	r.Use(middlewares.LoggingMiddleware)
+	r.Use(middlewares.AuthMiddleware)
 
 	// Регистрируем роуты
-	r.HandleFunc("/jobs", jobHandler.CreateJob).Methods("POST")
+	r.HandleFunc("/jobs/create", jobHandler.CreateJob).Methods("POST")
+	r.HandleFunc("/jobs/start", jobHandler.StartJob).Methods("POST")
 	r.HandleFunc("/jobs/{id}", jobHandler.GetJobByID).Methods("GET")
+	r.HandleFunc("/jobs", jobHandler.GetAllJob).Methods("GET")
+	r.HandleFunc("/jobs?job_id", jobHandler.GetAllJob).Methods("GET")
+	r.HandleFunc("/progress/{job_id}", jobHandler.GetProgress).Methods("GET")
+	r.HandleFunc("/progress", jobHandler.SetJobProgress).Methods("POST")
 
 	// Запускаем сервер
 	log.Println("Starting server on :8080")
