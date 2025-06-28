@@ -12,6 +12,7 @@ CREATE TABLE IF NOT EXISTS progress_tracker.job (
     message varchar(50),
     context varchar(300),
     created_at TIMESTAMPTZ DEFAULT now(),
+    started_at TIMESTAMPTZ,
     finished_at TIMESTAMPTZ,
     user_id UUID NOT NULL
     );

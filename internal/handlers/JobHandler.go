@@ -5,9 +5,11 @@ import (
 	"fmt"
 	"github.com/google/uuid"
 	"github.com/gorilla/mux"
+	"go/types"
 	"net/http"
 	"progress-tracker/internal/middlewares"
 	"progress-tracker/internal/queries"
+	"progress-tracker/internal/responses"
 	"progress-tracker/internal/services"
 )
 
@@ -45,11 +47,7 @@ func (h *JobHandler) CreateJob(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	w.Header().Set("Content-Type", "application/json")
-	w.WriteHeader(http.StatusCreated)
-	json.NewEncoder(w).Encode(struct {
-		IsSuccessful bool `json:"is_successful"`
-	}{IsSuccessful: true})
+	respondWithSuccessful(w, &input.JobID)
 }
 
 func (h *JobHandler) StartJob(w http.ResponseWriter, r *http.Request) {
@@ -75,11 +73,7 @@ func (h *JobHandler) StartJob(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	w.Header().Set("Content-Type", "application/json")
-	w.WriteHeader(http.StatusOK)
-	json.NewEncoder(w).Encode(struct {
-		IsSuccessful bool `json:"is_successful"`
-	}{IsSuccessful: true})
+	respondWithSuccessful(w, &input.JobID)
 }
 
 func (h *JobHandler) GetJobByID(w http.ResponseWriter, r *http.Request) {
@@ -97,8 +91,7 @@ func (h *JobHandler) GetJobByID(w http.ResponseWriter, r *http.Request) {
 		respondWithError(w, err.Error(), http.StatusBadRequest)
 	}
 
-	w.Header().Set("Content-Type", "application/json")
-	json.NewEncoder(w).Encode(job)
+	respondWithSuccessful(w, &job)
 }
 
 func (h *JobHandler) GetJobByJobID(w http.ResponseWriter, r *http.Request) {
@@ -116,8 +109,7 @@ func (h *JobHandler) GetJobByJobID(w http.ResponseWriter, r *http.Request) {
 		respondWithError(w, err.Error(), http.StatusBadRequest)
 	}
 
-	w.Header().Set("Content-Type", "application/json")
-	json.NewEncoder(w).Encode(job)
+	respondWithSuccessful(w, &job)
 }
 
 func (h *JobHandler) GetAllJob(w http.ResponseWriter, r *http.Request) {
@@ -127,8 +119,7 @@ func (h *JobHandler) GetAllJob(w http.ResponseWriter, r *http.Request) {
 		respondWithError(w, "internal error", http.StatusBadRequest)
 	}
 
-	w.Header().Set("Content-Type", "application/json")
-	json.NewEncoder(w).Encode(jobs)
+	respondWithSuccessful(w, &jobs)
 }
 
 func (h *JobHandler) SetJobProgress(w http.ResponseWriter, r *http.Request) {
@@ -153,11 +144,7 @@ func (h *JobHandler) SetJobProgress(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	w.Header().Set("Content-Type", "application/json")
-	w.WriteHeader(http.StatusOK)
-	json.NewEncoder(w).Encode(struct {
-		IsSuccessful bool `json:"is_successful"`
-	}{IsSuccessful: true})
+	respondWithSuccessful(w, &input.JobID)
 }
 
 func (h *JobHandler) GetProgress(w http.ResponseWriter, r *http.Request) {
@@ -174,20 +161,26 @@ func (h *JobHandler) GetProgress(w http.ResponseWriter, r *http.Request) {
 
 	if err != nil {
 		respondWithError(w, "get progress error"+err.Error(), http.StatusBadRequest)
+		return
 	}
 
-	w.Header().Set("Content-Type", "application/json")
-	w.WriteHeader(http.StatusOK)
-	json.NewEncoder(w).Encode(struct {
-		Progress float32 `json:"progress"`
-	}{Progress: progress})
+	respondWithSuccessful(w, &progress)
 }
 
 func respondWithError(w http.ResponseWriter, message string, code int) {
 	w.Header().Set("Content-Type", "application/json")
 	w.WriteHeader(code)
-	json.NewEncoder(w).Encode(ErrorResponse{
-		Code:    code,
-		Message: message,
+	json.NewEncoder(w).Encode(responses.Result[types.Nil]{
+		ErrorMessage: message,
+		IsSuccessful: false,
+	})
+}
+
+func respondWithSuccessful[T any](w http.ResponseWriter, data *T) {
+	w.Header().Set("Content-Type", "application/json")
+	w.WriteHeader(http.StatusOK)
+	json.NewEncoder(w).Encode(responses.Result[T]{
+		Data:         data,
+		IsSuccessful: true,
 	})
 }

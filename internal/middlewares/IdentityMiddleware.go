@@ -51,6 +51,7 @@ func extractBearerToken(r *http.Request) (string, error) {
 	return strings.TrimPrefix(authHeader, prefix), nil
 }
 
+// TODO
 func validateToken(tokenString, secretKey string) (string, error) {
 	//token, err := jwt.ParseWithClaims(tokenString, &CustomClaims{}, func(token *jwt.Token) (interface{}, error) {
 	//	if _, ok := token.Method.(*jwt.SigningMethodEd25519); !ok {

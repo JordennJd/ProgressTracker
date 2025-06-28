@@ -45,9 +45,39 @@ func (s *JobService) StartJob(query queries.StartJobQuery, userId uuid.UUID) err
 	if !s.IsJobExists(query.JobID) {
 		return errors.New(fmt.Sprintf("Job with job id: %s doesn't exists", query.JobID))
 	}
-	err := s.db.Model(&models.Job{}).Where("job_id = ?", query.JobID).Update("status", models.StatusRunning).Error
+	err := s.db.Model(&models.Job{}).Where("job_id = ?", query.JobID).
+		Updates(map[string]interface{}{
+			"status":     models.StatusRunning,
+			"started_at": time.Now(),
+		}).Error
 
 	return err
+}
+
+func (s *JobService) CompleteJob(query queries.CompleteJobQuery, userId uuid.UUID) error {
+	if !s.IsJobExists(query.JobID) {
+		return errors.New(fmt.Sprintf("Job with job id: %s doesn't exists", query.JobID))
+	}
+
+	if query.IsFailed {
+		err := s.db.Model(&models.Job{}).Where("job_id = ?", query.JobID).
+			Updates(map[string]interface{}{
+				"status":       models.StatusFailed,
+				"message":      query.Message,
+				"completed_at": time.Now(),
+			}).
+			Error
+		return err
+	} else {
+		err := s.db.Model(&models.Job{}).Where("job_id = ?", query.JobID).
+			Updates(map[string]interface{}{
+				"status":      models.StatusCompleted,
+				"message":     query.Message,
+				"finished_at": time.Now(),
+			}).
+			Error
+		return err
+	}
 }
 
 func (s *JobService) GetJobByID(id uuid.UUID) (*models.Job, error) {
