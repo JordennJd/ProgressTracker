@@ -26,33 +26,43 @@ var File_jobService_proto protoreflect.FileDescriptor
 const file_jobService_proto_rawDesc = "" +
 	"\n" +
 	"\x10jobService.proto\x12\n" +
-	"jobService\x1a\fmodels.proto2\xaa\x01\n" +
+	"jobService\x1a\fmodels.proto2\x94\x02\n" +
 	"\n" +
 	"JobService\x12%\n" +
 	"\tCreateJob\x12\x0f.CreateJobQuery\x1a\a.Result\x12#\n" +
 	"\bStartJob\x12\x0e.StartJobQuery\x1a\a.Result\x12)\n" +
 	"\vCompleteJob\x12\x11.CompleteJobQuery\x1a\a.Result\x12%\n" +
-	"\x06GetJob\x12\f.GetJobQuery\x1a\r.GetJobResultB$Z\"progress-tracker/api/proto/serviceb\x06proto3"
+	"\x06GetJob\x12\f.GetJobQuery\x1a\r.GetJobResult\x12/\n" +
+	"\n" +
+	"GetNextJob\x12\x12.GetNextJobRequest\x1a\r.GetJobResult\x127\n" +
+	"\x0eGetWorkingJobs\x12\x15.GetWorkingJobRequest\x1a\x0e.GetJobsResultB$Z\"progress-tracker/api/proto/serviceb\x06proto3"
 
 var file_jobService_proto_goTypes = []any{
-	(*models.CreateJobQuery)(nil),   // 0: CreateJobQuery
-	(*models.StartJobQuery)(nil),    // 1: StartJobQuery
-	(*models.CompleteJobQuery)(nil), // 2: CompleteJobQuery
-	(*models.GetJobQuery)(nil),      // 3: GetJobQuery
-	(*models.Result)(nil),           // 4: Result
-	(*models.GetJobResult)(nil),     // 5: GetJobResult
+	(*models.CreateJobQuery)(nil),       // 0: CreateJobQuery
+	(*models.StartJobQuery)(nil),        // 1: StartJobQuery
+	(*models.CompleteJobQuery)(nil),     // 2: CompleteJobQuery
+	(*models.GetJobQuery)(nil),          // 3: GetJobQuery
+	(*models.GetNextJobRequest)(nil),    // 4: GetNextJobRequest
+	(*models.GetWorkingJobRequest)(nil), // 5: GetWorkingJobRequest
+	(*models.Result)(nil),               // 6: Result
+	(*models.GetJobResult)(nil),         // 7: GetJobResult
+	(*models.GetJobsResult)(nil),        // 8: GetJobsResult
 }
 var file_jobService_proto_depIdxs = []int32{
 	0, // 0: jobService.JobService.CreateJob:input_type -> CreateJobQuery
 	1, // 1: jobService.JobService.StartJob:input_type -> StartJobQuery
 	2, // 2: jobService.JobService.CompleteJob:input_type -> CompleteJobQuery
 	3, // 3: jobService.JobService.GetJob:input_type -> GetJobQuery
-	4, // 4: jobService.JobService.CreateJob:output_type -> Result
-	4, // 5: jobService.JobService.StartJob:output_type -> Result
-	4, // 6: jobService.JobService.CompleteJob:output_type -> Result
-	5, // 7: jobService.JobService.GetJob:output_type -> GetJobResult
-	4, // [4:8] is the sub-list for method output_type
-	0, // [0:4] is the sub-list for method input_type
+	4, // 4: jobService.JobService.GetNextJob:input_type -> GetNextJobRequest
+	5, // 5: jobService.JobService.GetWorkingJobs:input_type -> GetWorkingJobRequest
+	6, // 6: jobService.JobService.CreateJob:output_type -> Result
+	6, // 7: jobService.JobService.StartJob:output_type -> Result
+	6, // 8: jobService.JobService.CompleteJob:output_type -> Result
+	7, // 9: jobService.JobService.GetJob:output_type -> GetJobResult
+	7, // 10: jobService.JobService.GetNextJob:output_type -> GetJobResult
+	8, // 11: jobService.JobService.GetWorkingJobs:output_type -> GetJobsResult
+	6, // [6:12] is the sub-list for method output_type
+	0, // [0:6] is the sub-list for method input_type
 	0, // [0:0] is the sub-list for extension type_name
 	0, // [0:0] is the sub-list for extension extendee
 	0, // [0:0] is the sub-list for field type_name

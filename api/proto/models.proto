@@ -67,3 +67,11 @@ message SetProgressQuery {
   string job_id = 1;
   float progress = 2;
 }
+
+message GetNextJobRequest {
+  string job_type = 1;
+}
+
+message GetWorkingJobRequest {
+  string job_type = 1;
+}

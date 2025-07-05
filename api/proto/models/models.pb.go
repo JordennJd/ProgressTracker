@@ -634,6 +634,94 @@ func (x *SetProgressQuery) GetProgress() float32 {
 	return 0
 }
 
+type GetNextJobRequest struct {
+	state         protoimpl.MessageState `protogen:"open.v1"`
+	JobType       string                 `protobuf:"bytes,1,opt,name=job_type,json=jobType,proto3" json:"job_type,omitempty"`
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
+}
+
+func (x *GetNextJobRequest) Reset() {
+	*x = GetNextJobRequest{}
+	mi := &file_models_proto_msgTypes[9]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *GetNextJobRequest) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*GetNextJobRequest) ProtoMessage() {}
+
+func (x *GetNextJobRequest) ProtoReflect() protoreflect.Message {
+	mi := &file_models_proto_msgTypes[9]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use GetNextJobRequest.ProtoReflect.Descriptor instead.
+func (*GetNextJobRequest) Descriptor() ([]byte, []int) {
+	return file_models_proto_rawDescGZIP(), []int{9}
+}
+
+func (x *GetNextJobRequest) GetJobType() string {
+	if x != nil {
+		return x.JobType
+	}
+	return ""
+}
+
+type GetWorkingJobRequest struct {
+	state         protoimpl.MessageState `protogen:"open.v1"`
+	JobType       string                 `protobuf:"bytes,1,opt,name=job_type,json=jobType,proto3" json:"job_type,omitempty"`
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
+}
+
+func (x *GetWorkingJobRequest) Reset() {
+	*x = GetWorkingJobRequest{}
+	mi := &file_models_proto_msgTypes[10]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *GetWorkingJobRequest) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*GetWorkingJobRequest) ProtoMessage() {}
+
+func (x *GetWorkingJobRequest) ProtoReflect() protoreflect.Message {
+	mi := &file_models_proto_msgTypes[10]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use GetWorkingJobRequest.ProtoReflect.Descriptor instead.
+func (*GetWorkingJobRequest) Descriptor() ([]byte, []int) {
+	return file_models_proto_rawDescGZIP(), []int{10}
+}
+
+func (x *GetWorkingJobRequest) GetJobType() string {
+	if x != nil {
+		return x.JobType
+	}
+	return ""
+}
+
 var File_models_proto protoreflect.FileDescriptor
 
 const file_models_proto_rawDesc = "" +
@@ -680,7 +768,11 @@ const file_models_proto_rawDesc = "" +
 	" \x01(\tR\x06userId\"E\n" +
 	"\x10SetProgressQuery\x12\x15\n" +
 	"\x06job_id\x18\x01 \x01(\tR\x05jobId\x12\x1a\n" +
-	"\bprogress\x18\x02 \x01(\x02R\bprogress*\x84\x01\n" +
+	"\bprogress\x18\x02 \x01(\x02R\bprogress\".\n" +
+	"\x11GetNextJobRequest\x12\x19\n" +
+	"\bjob_type\x18\x01 \x01(\tR\ajobType\"1\n" +
+	"\x14GetWorkingJobRequest\x12\x19\n" +
+	"\bjob_type\x18\x01 \x01(\tR\ajobType*\x84\x01\n" +
 	"\tJobStatus\x12\x16\n" +
 	"\x12JOB_STATUS_CREATED\x10\x00\x12\x16\n" +
 	"\x12JOB_STATUS_PENDING\x10\x01\x12\x16\n" +
@@ -701,7 +793,7 @@ func file_models_proto_rawDescGZIP() []byte {
 }
 
 var file_models_proto_enumTypes = make([]protoimpl.EnumInfo, 1)
-var file_models_proto_msgTypes = make([]protoimpl.MessageInfo, 9)
+var file_models_proto_msgTypes = make([]protoimpl.MessageInfo, 11)
 var file_models_proto_goTypes = []any{
 	(JobStatus)(0),                 // 0: JobStatus
 	(*Result)(nil),                 // 1: Result
@@ -713,20 +805,22 @@ var file_models_proto_goTypes = []any{
 	(*CompleteJobQuery)(nil),       // 7: CompleteJobQuery
 	(*Job)(nil),                    // 8: Job
 	(*SetProgressQuery)(nil),       // 9: SetProgressQuery
-	(*wrapperspb.StringValue)(nil), // 10: google.protobuf.StringValue
-	(*timestamppb.Timestamp)(nil),  // 11: google.protobuf.Timestamp
+	(*GetNextJobRequest)(nil),      // 10: GetNextJobRequest
+	(*GetWorkingJobRequest)(nil),   // 11: GetWorkingJobRequest
+	(*wrapperspb.StringValue)(nil), // 12: google.protobuf.StringValue
+	(*timestamppb.Timestamp)(nil),  // 13: google.protobuf.Timestamp
 }
 var file_models_proto_depIdxs = []int32{
 	8,  // 0: GetJobResult.job:type_name -> Job
 	8,  // 1: GetJobsResult.jobs:type_name -> Job
-	10, // 2: CreateJobQuery.message:type_name -> google.protobuf.StringValue
-	10, // 3: CreateJobQuery.context:type_name -> google.protobuf.StringValue
-	10, // 4: CompleteJobQuery.message:type_name -> google.protobuf.StringValue
+	12, // 2: CreateJobQuery.message:type_name -> google.protobuf.StringValue
+	12, // 3: CreateJobQuery.context:type_name -> google.protobuf.StringValue
+	12, // 4: CompleteJobQuery.message:type_name -> google.protobuf.StringValue
 	0,  // 5: Job.status:type_name -> JobStatus
-	10, // 6: Job.message:type_name -> google.protobuf.StringValue
-	10, // 7: Job.context:type_name -> google.protobuf.StringValue
-	11, // 8: Job.created_at:type_name -> google.protobuf.Timestamp
-	11, // 9: Job.finished_at:type_name -> google.protobuf.Timestamp
+	12, // 6: Job.message:type_name -> google.protobuf.StringValue
+	12, // 7: Job.context:type_name -> google.protobuf.StringValue
+	13, // 8: Job.created_at:type_name -> google.protobuf.Timestamp
+	13, // 9: Job.finished_at:type_name -> google.protobuf.Timestamp
 	10, // [10:10] is the sub-list for method output_type
 	10, // [10:10] is the sub-list for method input_type
 	10, // [10:10] is the sub-list for extension type_name
@@ -745,7 +839,7 @@ func file_models_proto_init() {
 			GoPackagePath: reflect.TypeOf(x{}).PkgPath(),
 			RawDescriptor: unsafe.Slice(unsafe.StringData(file_models_proto_rawDesc), len(file_models_proto_rawDesc)),
 			NumEnums:      1,
-			NumMessages:   9,
+			NumMessages:   11,
 			NumExtensions: 0,
 			NumServices:   0,
 		},

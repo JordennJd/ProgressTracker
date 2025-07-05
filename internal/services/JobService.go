@@ -62,9 +62,9 @@ func (s *JobService) CompleteJob(query queries.CompleteJobQuery, userId uuid.UUI
 	if query.IsFailed {
 		err := s.db.Model(&models.Job{}).Where("job_id = ?", query.JobID).
 			Updates(map[string]interface{}{
-				"status":       models.StatusFailed,
-				"message":      query.Message,
-				"completed_at": time.Now(),
+				"status":      models.StatusFailed,
+				"message":     query.Message,
+				"finished_at": time.Now(),
 			}).
 			Error
 		return err
@@ -110,9 +110,7 @@ func (s *JobService) GetAll() ([]models.Job, error) {
 	if result.Error != nil {
 		return nil, result.Error
 	}
-	if result.RowsAffected == 0 {
-		return nil, gorm.ErrRecordNotFound
-	}
+
 	return jobs, nil
 }
 
@@ -124,4 +122,35 @@ func (s *JobService) IsJobExists(jobId uuid.UUID) bool {
 	}
 
 	return job != nil
+}
+
+func (s *JobService) GetNextJob(jobType string) (*models.Job, error) {
+	var job models.Job
+	err := s.db.Where("job_type = ? AND status = ?", jobType, models.StatusCreated).
+		Order("created_at ASC").
+		First(&job).
+		Error
+
+	if err != nil {
+		if errors.Is(err, gorm.ErrRecordNotFound) {
+			return nil, nil
+		}
+		return nil, err
+	}
+	return &job, nil
+}
+
+func (s *JobService) GetWorkingJobs(jobType string) ([]models.Job, error) {
+	var jobs []models.Job
+	err := s.db.Where("job_type = ? AND status = ?", jobType, models.StatusRunning).
+		Find(&jobs).
+		Error
+
+	if err != nil {
+		if errors.Is(err, gorm.ErrRecordNotFound) {
+			return nil, nil
+		}
+		return nil, err
+	}
+	return jobs, nil
 }

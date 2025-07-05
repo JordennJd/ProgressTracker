@@ -1,0 +1,21 @@
+FROM golang:latest AS builder
+
+WORKDIR /app
+
+COPY go.mod ./
+RUN go mod tidy
+RUN go mod download
+
+COPY . .
+COPY config.yaml ./config.yaml
+
+RUN go build -o main ./cmd/REST
+
+FROM debian:latest
+
+WORKDIR /app
+
+COPY --from=builder /app/main .
+COPY --from=builder /app/config_docker.yaml .
+
+CMD ["./main"]

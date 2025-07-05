@@ -1,0 +1,10 @@
+database:
+  url: postgres://postgres:postgres@godb:5432/saxs?sslmode=disable&search_path=progress_tracker
+
+redis:
+  host: redis
+  port: 6379
+  db: 0
+  password: redis
+
+debug: true

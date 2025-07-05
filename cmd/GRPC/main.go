@@ -39,7 +39,7 @@ func main() {
 
 	pb.RegisterJobServiceServer(grpcServer, handlers.NewJobRpcServer(jobService))
 
-	log.Println("server started on :50051")
+	log.Println("grpc server started on :50051")
 	if err := grpcServer.Serve(lis); err != nil {
 		log.Fatalf("server error: %v", err)
 	}

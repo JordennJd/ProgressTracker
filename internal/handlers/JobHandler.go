@@ -117,6 +117,7 @@ func (h *JobHandler) GetAllJob(w http.ResponseWriter, r *http.Request) {
 
 	if err != nil {
 		respondWithError(w, "internal error", http.StatusBadRequest)
+		return
 	}
 
 	respondWithSuccessful(w, &jobs)

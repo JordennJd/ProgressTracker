@@ -40,3 +40,10 @@ func (j Job) GetMessage() string {
 	}
 	return ""
 }
+
+func (j Job) GetContext() string {
+	if j.Context != nil {
+		return *j.Context
+	}
+	return ""
+}

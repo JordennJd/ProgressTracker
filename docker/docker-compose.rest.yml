@@ -36,20 +36,6 @@ services:
       timeout: 3s
       retries: 5
 
-  grpc-service:
-    image: jordenndev/progress-tracker-grpc
-    build:
-      context: ../
-      dockerfile: Dockerfile-GRPC
-    environment:
-      APP_ENV: Docker
-    ports:
-      - "50051:50051"
-    depends_on:
-      - redis
-      - godb
-      - migrate
-
   rest-service:
     image: jordenndev/progress-tracker-rest
     build:
