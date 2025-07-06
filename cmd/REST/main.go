@@ -9,6 +9,7 @@ import (
 	"progress-tracker/internal/handlers"
 	"progress-tracker/internal/middlewares"
 
+	gohandlers "github.com/gorilla/handlers"
 	"progress-tracker/internal/services"
 
 	"gorm.io/driver/postgres"
@@ -34,6 +35,11 @@ func main() {
 
 	// Создаём новый router
 	r := mux.NewRouter()
+	headersOk := gohandlers.AllowedHeaders([]string{"X-Requested-With", "Content-Type", "Authorization"})
+	originsOk := gohandlers.AllowedOrigins([]string{"*"})
+	methodsOk := gohandlers.AllowedMethods([]string{"GET", "HEAD", "POST", "PUT", "OPTIONS"})
+
+	r.Use(middlewares.CorsMiddleware)
 	r.Use(middlewares.LoggingMiddleware)
 	r.Use(middlewares.AuthMiddleware)
 
@@ -48,7 +54,7 @@ func main() {
 
 	// Запускаем сервер
 	log.Println("Starting server on :8080")
-	if err := http.ListenAndServe(":8080", r); err != nil {
+	if err := http.ListenAndServe(":8080", gohandlers.CORS(originsOk, headersOk, methodsOk)(r)); err != nil {
 		log.Fatal(err)
 	}
 }

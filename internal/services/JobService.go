@@ -3,12 +3,11 @@ package services
 import (
 	"errors"
 	"fmt"
+	"github.com/google/uuid"
+	"gorm.io/gorm"
 	"progress-tracker/internal/models"
 	"progress-tracker/internal/queries"
 	"time"
-
-	"github.com/google/uuid"
-	"gorm.io/gorm"
 )
 
 type JobService struct {
@@ -104,9 +103,22 @@ func (s *JobService) GetJobByJobID(jobId uuid.UUID) (*models.Job, error) {
 	return &job, nil
 }
 
-func (s *JobService) GetAll() ([]models.Job, error) {
+func (s *JobService) GetAll(dateFrom, dateTo time.Time) ([]models.Job, error) {
 	var jobs []models.Job
-	result := s.db.Raw("SELECT * FROM job").Scan(&jobs)
+
+	if dateTo.After(dateFrom) {
+		return nil, fmt.Errorf("dateFrom cannot be after dateTo")
+	}
+
+	query := s.db.Raw(`
+        SELECT * FROM job 
+        WHERE created_at BETWEEN ? AND ?
+        ORDER BY created_at ASC`,
+		dateFrom.AddDate(0, 0, -1).Format("2006-01-02 15:04:05"),
+		dateTo.AddDate(0, 0, 1).Format("2006-01-02 15:04:05"),
+	)
+
+	result := query.Scan(&jobs)
 	if result.Error != nil {
 		return nil, result.Error
 	}

@@ -11,6 +11,7 @@ import (
 	"progress-tracker/internal/queries"
 	"progress-tracker/internal/responses"
 	"progress-tracker/internal/services"
+	"time"
 )
 
 type ErrorResponse struct {
@@ -113,7 +114,23 @@ func (h *JobHandler) GetJobByJobID(w http.ResponseWriter, r *http.Request) {
 }
 
 func (h *JobHandler) GetAllJob(w http.ResponseWriter, r *http.Request) {
-	jobs, err := h.service.GetAll()
+	queryParams := r.URL.Query()
+
+	dateFromStr := queryParams.Get("dateFrom")
+	dateToStr := queryParams.Get("dateTo")
+
+	dateFrom, err := time.Parse(time.RFC3339Nano, dateFromStr)
+	if err != nil {
+		respondWithError(w, "invalid date format", http.StatusBadRequest)
+		return
+	}
+	dateTo, err := time.Parse(time.RFC3339Nano, dateToStr)
+	if err != nil {
+		respondWithError(w, "invalid date format", http.StatusBadRequest)
+		return
+	}
+
+	jobs, err := h.service.GetAll(dateFrom, dateTo)
 
 	if err != nil {
 		respondWithError(w, "internal error", http.StatusBadRequest)

@@ -8,3 +8,5 @@ redis:
   password: redis
 
 debug: true
+
+CORS: ["http://localhost:5173/"]
